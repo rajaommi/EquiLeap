@@ -71,18 +71,20 @@ void updt_offset(float offset)
 
 void updt_coef(int command, float kp, float kd){
   if (command<200){
-    Balanced.kp_balance=kp*30/255 + 0.0;
-    Balanced.kd_balance=kd*10/255 + 0.0;
+    Balanced.kp_balance=kp*10./255 + 60.0;
+    Balanced.kd_balance=kd*2./255 + 5.0;
     return;
   }
   if (command<1000){
-    Balanced.kp_speed=kp*50/255 + 0.0; //3.67 Pas mal
-    Balanced.ki_speed=kd*0.5/255 + 0.0; // 0.4
+    // Balanced.kp_speed=kp*2./255 + 4.0; //3.67 Pas mal
+    // Balanced.ki_speed=kd*1./255 + 0.1; // 0.4
+    Balanced.kp_speed=kp*2.5/255 + 4.00; //3.67 Pas mal
+    Balanced.ki_speed=kd*1./255 + 0.3; // 0.4
     return;
   }
   if (command>1000){
     Balanced.kp_turn=kp*0.3/255; //0.13 est la bonne valeur pour la vide
-    Balanced.kd_turn=kd*10/255;
+    Balanced.kd_turn=kd*0.1/255;
   }
 }
 void reset_coef(){
@@ -183,10 +185,9 @@ static void Timer2::interrupt()
 { 
   // Serial.print("int2 = ");
   // Serial.println(millis()-int2);
-  int2=millis();
+  // int2=millis();
 
-
-  tps2=millis();
+  // tps2=millis();
 
   sei(); //enable the global interrupt
   Balanced.Get_EncoderSpeed();//on récupère les données des encodeurs
@@ -195,16 +196,16 @@ static void Timer2::interrupt()
   Balanced.PD_VerticalRing();
   Balanced.interrupt_cnt++;
 
-  Balanced.interrupt_cnt=0;
-  Balanced.PI_SpeedRing();//calcul de 
-  Balanced.PI_SteeringRing();
+  // Balanced.interrupt_cnt=0;
+  // Balanced.PI_SpeedRing();//calcul de 
+  // Balanced.PI_SteeringRing();
 
-  // if(Balanced.interrupt_cnt > 5)//toutes les 8 itérations
-  // {
-  //   Balanced.interrupt_cnt=0;
-  //   Balanced.PI_SpeedRing();//calcul de 
-  //   Balanced.PI_SteeringRing();
-  // }
+  if(Balanced.interrupt_cnt > 2)//toutes les 8 itérations
+  {
+    Balanced.interrupt_cnt=0;
+    Balanced.PI_SpeedRing();//calcul de 
+    Balanced.PI_SteeringRing();
+  }
 
   telecom();
 
@@ -224,7 +225,7 @@ void setup() {
   Motor.Encoder_init();
 
   //Serial for the receiver
-  Timer2.init(10);
+  Timer2.init(15);
   Mpu6050.init();
   Serial3.begin(9600);
   //Serial monitor
@@ -266,16 +267,16 @@ void loop() {
     Serial.print(" Spd_out= ");
     Serial.println(Balanced.speed_control_output);
     
-    // Serial.print("ang= "); 
-    // Serial.print(kalmanfilter.angle);
-    // Serial.print(" vit= ");
-    // Serial.print(kalmanfilter.Gyro_x);
-    // Serial.print(" Kp= ");
-    // Serial.print(Balanced.kp_balance);
-    // Serial.print(" Kd= ");
-    // Serial.print(Balanced.kd_balance);
-    // Serial.print(" Bal_out= ");
-    // Serial.println(Balanced.balance_control_output);
+    Serial.print("ang= "); 
+    Serial.print(kalmanfilter.angle);
+    Serial.print(" vit= ");
+    Serial.print(kalmanfilter.Gyro_x);
+    Serial.print(" Kp= ");
+    Serial.print(Balanced.kp_balance);
+    Serial.print(" Kd= ");
+    Serial.print(Balanced.kd_balance);
+    Serial.print(" Bal_out= ");
+    Serial.println(Balanced.balance_control_output);
 
     Serial.print(" pwm_left= ");
     Serial.println(Balanced.pwm_left);

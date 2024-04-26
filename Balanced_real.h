@@ -36,8 +36,8 @@ class Balanced
 /*Speed value*/
           double pwm_left=0.0;
           double pwm_right=0.0;
-          double pwm_left_imp=300.0;
-          double pwm_right_imp=300.0;
+          double pwm_left_imp=0.0;
+          double pwm_right_imp=0.0;
           int encoder_left_pulse_num_speed;
           int encoder_right_pulse_num_speed;
 
