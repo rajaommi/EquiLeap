@@ -71,24 +71,12 @@ void updt_offset(float offset)
 
 void updt_coef(int command, float kp, float kd){
   if (command<200){
-    // Balanced.kp_balance=kp*30/255 + 20.0;
-    // Balanced.kd_balance=kd*10/255 + 1.0;
-
-    // Balanced.kp_balance=kp*30/255 + 60.0;
-    // Balanced.kd_balance=kd*10/255 + 3.0;
-
     Balanced.kp_balance=kp*30/255 + 0.0;
     Balanced.kd_balance=kd*10/255 + 0.0;
     return;
   }
   if (command<1000){
-    // Balanced.kp_speed=kp*5/255 + 40.0; //3.67 Pas mal
-    // Balanced.ki_speed=kd*0.5/255 + 2.0; // 0.4
-
-    // Balanced.kp_speed=kp*5/255 + 125.0; //3.67 Pas mal
-    // Balanced.ki_speed=kd*0.5/255 + 5.0; // 0.4
-
-    Balanced.kp_speed=kp*40/255 + 1.0; //3.67 Pas mal
+    Balanced.kp_speed=kp*50/255 + 0.0; //3.67 Pas mal
     Balanced.ki_speed=kd*0.5/255 + 0.0; // 0.4
     return;
   }
@@ -187,9 +175,18 @@ void Timer2::init(int time)
   
 }
 
+
+unsigned long tps2=0;
+unsigned long int2=millis();
+
 static void Timer2::interrupt()
 { 
-  // Serial.println("Start");
+  // Serial.print("int2 = ");
+  // Serial.println(millis()-int2);
+  int2=millis();
+
+
+  tps2=millis();
 
   sei(); //enable the global interrupt
   Balanced.Get_EncoderSpeed();//on récupère les données des encodeurs
@@ -197,12 +194,17 @@ static void Timer2::interrupt()
 
   Balanced.PD_VerticalRing();
   Balanced.interrupt_cnt++;
-  if(Balanced.interrupt_cnt > 2)//toutes les 8 itérations
-  {
-    Balanced.interrupt_cnt=0;
-    Balanced.PI_SpeedRing();//calcul de 
-    Balanced.PI_SteeringRing();
-  }
+
+  Balanced.interrupt_cnt=0;
+  Balanced.PI_SpeedRing();//calcul de 
+  Balanced.PI_SteeringRing();
+
+  // if(Balanced.interrupt_cnt > 5)//toutes les 8 itérations
+  // {
+  //   Balanced.interrupt_cnt=0;
+  //   Balanced.PI_SpeedRing();//calcul de 
+  //   Balanced.PI_SteeringRing();
+  // }
 
   telecom();
 
@@ -210,9 +212,11 @@ static void Timer2::interrupt()
     Balanced.Total_Control();
   }
 
-  // Serial.println("END");
-  // Serial.println("");
+  // Serial.print("tps 2 = ");
+  // Serial.println(millis()-tps2);
 }
+
+
 
 
 
@@ -245,7 +249,7 @@ void setup() {
 void loop() {
   static unsigned long print_time;
   
-
+  
   if(millis() - print_time > 1000)
   { 
     print_time = millis();
@@ -262,16 +266,16 @@ void loop() {
     Serial.print(" Spd_out= ");
     Serial.println(Balanced.speed_control_output);
     
-    Serial.print("ang= "); 
-    Serial.print(kalmanfilter.angle);
-    Serial.print(" vit= ");
-    Serial.print(kalmanfilter.Gyro_x);
-    Serial.print(" Kp= ");
-    Serial.print(Balanced.kp_balance);
-    Serial.print(" Kd= ");
-    Serial.print(Balanced.kd_balance);
-    Serial.print(" Bal_out= ");
-    Serial.println(Balanced.balance_control_output);
+    // Serial.print("ang= "); 
+    // Serial.print(kalmanfilter.angle);
+    // Serial.print(" vit= ");
+    // Serial.print(kalmanfilter.Gyro_x);
+    // Serial.print(" Kp= ");
+    // Serial.print(Balanced.kp_balance);
+    // Serial.print(" Kd= ");
+    // Serial.print(Balanced.kd_balance);
+    // Serial.print(" Bal_out= ");
+    // Serial.println(Balanced.balance_control_output);
 
     Serial.print(" pwm_left= ");
     Serial.println(Balanced.pwm_left);
@@ -280,6 +284,7 @@ void loop() {
     // Serial.println(Balanced.test_interrupt);
     // Serial.println("In loop");
   }
+  
   
 }
 

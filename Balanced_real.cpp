@@ -16,23 +16,27 @@ int max_pwm = 1000;
 
 Balanced::Balanced()
 { 
-  // kp_balance = 20.0, kd_balance = 1.0;
-  // kp_balance = 60.0, kd_balance = 3.0;
   kp_balance = 0.0, kd_balance = 0.0;
 
-  // kp_speed = 40.0, ki_speed = 2.0; //kp speedd s enerve a 7.5 (c'était à cause du signe)
-  // kp_speed = 125.0, ki_speed = 5.0; //kp speedd s enerve a 7.5 (c'était à cause du signe)
-  // kp_speed = 0.0, ki_speed = 0.0; //kp speedd s enerve a 7.5 (c'était à cause du signe)
-
-  kp_speed = 1.0, ki_speed = 0.0; //kp speedd s enerve a 7.5 (c'était à cause du signe)
+  kp_speed = 0.0, ki_speed = 0.0; //kp speedd s enerve a 7.5 (c'était à cause du signe)
 
   kp_turn = 0.0, kd_turn = 0.0;
+  
   offset_orientation=0.0;
+}
+
+double constrain_val(double val, double min_val, double max_val) {
+  if (val < min_val) {
+    return min_val;
+  } else if (val > max_val) {
+    return max_val;
+  } else {
+    return val;
+  }
 }
 
 void Balanced::Total_Control()
 {
-  
   if (not arret_moteur){
     // pwm_left = balance_control_output - speed_control_output - rotation_control_output;//Superposition of Vertical Velocity Steering Ring
     // pwm_right = balance_control_output - speed_control_output + rotation_control_output;//Superposition of Vertical Velocity Steering Ring
@@ -41,8 +45,10 @@ void Balanced::Total_Control()
     pwm_right =  - speed_control_output ;//Superposition of Vertical Velocity Steering Ring
 
 
-    pwm_left = constrain(pwm_left, -max_pwm, max_pwm);
-    pwm_right = constrain(pwm_right, -max_pwm, max_pwm);
+    pwm_left = constrain_val(pwm_left, -max_pwm, max_pwm);
+    pwm_right = constrain_val(pwm_right, -max_pwm, max_pwm);
+
+    
 
     // cmd_sens += 1;
 
@@ -58,21 +64,19 @@ void Balanced::Total_Control()
     // pwm_left = -200;
     // pwm_right = -200;
     
-    //  || PICKED_UP
-    while(EXCESSIVE_ANGLE_TILT)
-    { 
-      Mpu6050.DataProcessing();
-      Motor.Stop();
-    }
-    Motor.Control(pwm_left,pwm_right);
-
+     
+    // while(EXCESSIVE_ANGLE_TILT || PICKED_UP) 
+    // { 
+    //   Mpu6050.DataProcessing();
+    //   Motor.Stop();
+    // }
     
-
-   }
-
+    Motor.Control(pwm_left,pwm_right);
+  }
   else{
     Motor.Stop();
   }
+  
   
 }
 
@@ -149,16 +153,18 @@ void Balanced::Right(int speed)
 
 void Balanced::PI_SpeedRing()
 {
-   double car_speed=(encoder_left_pulse_num_speed + encoder_right_pulse_num_speed) * 0.5;
+  //  double car_speed=(encoder_left_pulse_num_speed + encoder_right_pulse_num_speed) * 0.5;
+   double car_speed=(encoder_left_pulse_num_speed);
    encoder_left_pulse_num_speed = 0;
    encoder_right_pulse_num_speed = 0;
    speed_filter = speed_filter_old * 0.0 + car_speed * 1.0;
    speed_filter_old = speed_filter;
    car_speed_integeral += speed_filter;
    car_speed_integeral += -setting_car_speed; 
-   car_speed_integeral = constrain(car_speed_integeral, -400, 400);
+   car_speed_integeral = constrain_val(car_speed_integeral, -400, 400);
 
-   speed_control_output = kp_speed * speed_filter + ki_speed * car_speed_integeral;
+   speed_control_output = -kp_speed * speed_filter - ki_speed * car_speed_integeral;
+   speed_control_output = constrain_val(speed_control_output, -999, 999);
   //  speed_control_output = -speed_control_output;
 
   // speed_control_output = 150;
