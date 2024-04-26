@@ -19,6 +19,9 @@ class Balanced
 
           
           Balanced();
+
+          void Encoder_init();
+          
           void Get_EncoderSpeed();
           void PD_VerticalRing();
           void PI_SpeedRing();

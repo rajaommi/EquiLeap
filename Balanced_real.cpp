@@ -5,6 +5,11 @@
 #include "KalmanFilter.h"
 #include "sbus.h"
 
+void HandleLeftMotorInterrupt();
+void HandleRightMotorInterrupt();
+int ParseEncoder(bool EncoderAPrev, bool EncoderBPrev
+      ,bool EncoderASet, bool EncoderBSet);
+
 MPU6050 MPU6050;
 Mpu6050 Mpu6050;
 
@@ -78,32 +83,131 @@ void Balanced::Total_Control()
   
 }
 
+///// Codes encodeurs quadratures //////
+#include <digitalWriteFast.h>
+
+// Left encoder
+#define c_LeftEncoderPinA 2
+#define c_LeftEncoderPinB 3
+
+#define c_RightEncoderPinA 18
+#define c_RightEncoderPinB 19
+
+
+volatile bool _LeftEncoderASet;
+volatile bool _LeftEncoderBSet;
+volatile bool _LeftEncoderAPrev;
+volatile bool _LeftEncoderBPrev;
+volatile long _LeftEncoderTicks = 0;
+volatile long _LeftEncoderTicks_actu = 0;
+
+volatile bool _RightEncoderASet;
+volatile bool _RightEncoderBSet;
+volatile bool _RightEncoderAPrev;
+volatile bool _RightEncoderBPrev;
+volatile long _RightEncoderTicks = 0;
+volatile long _RightEncoderTicks_actu = 0;
+
+void Balanced::Encoder_init()
+{
+  // Quadrature encoders
+  // Left encoder
+  pinMode(c_LeftEncoderPinA, INPUT_PULLUP);      // sets pin A as input
+  pinMode(c_LeftEncoderPinB, INPUT_PULLUP);      // sets pin B as input
+  attachInterrupt(digitalPinToInterrupt(c_LeftEncoderPinA), HandleLeftMotorInterrupt, CHANGE);
+  attachInterrupt(digitalPinToInterrupt(c_LeftEncoderPinB), HandleLeftMotorInterrupt, CHANGE);
+
+  // Right encoder
+  pinMode(c_RightEncoderPinA, INPUT_PULLUP);      // sets pin A as input
+  pinMode(c_RightEncoderPinB, INPUT_PULLUP);      // sets pin B as input
+  attachInterrupt(digitalPinToInterrupt(c_RightEncoderPinA), HandleRightMotorInterrupt, CHANGE);
+  attachInterrupt(digitalPinToInterrupt(c_RightEncoderPinB), HandleRightMotorInterrupt, CHANGE);
+}
+
+// Interrupt service routines for the right motor's quadrature encoder
+void HandleLeftMotorInterrupt(){
+  // Test transition;
+  _LeftEncoderBSet = digitalReadFast(c_LeftEncoderPinB);
+  _LeftEncoderASet = digitalReadFast(c_LeftEncoderPinA);
+  
+  _LeftEncoderTicks+=ParseEncoder(_LeftEncoderAPrev, _LeftEncoderBPrev
+                                  , _LeftEncoderASet, _LeftEncoderBSet);
+  
+  _LeftEncoderAPrev = _LeftEncoderASet;
+  _LeftEncoderBPrev = _LeftEncoderBSet;
+}
+
+void HandleRightMotorInterrupt(){
+  // Test transition;
+  _RightEncoderBSet = digitalReadFast(c_RightEncoderPinB);
+  _RightEncoderASet = digitalReadFast(c_RightEncoderPinA);
+  
+  _RightEncoderTicks+=ParseEncoder(_RightEncoderAPrev, _RightEncoderBPrev
+                                  , _RightEncoderASet, _RightEncoderBSet);
+  
+  _RightEncoderAPrev = _RightEncoderASet;
+  _RightEncoderBPrev = _RightEncoderBSet;
+}
+
+
+int ParseEncoder(bool EncoderAPrev, bool EncoderBPrev
+                ,bool EncoderASet, bool EncoderBSet)
+{
+  if (EncoderAPrev && EncoderBPrev){
+    if(!EncoderASet && EncoderBSet) return 1;
+    if(EncoderASet && !EncoderBSet) return -1;
+  }else if(!EncoderAPrev && EncoderBPrev){
+    if(!EncoderASet && !EncoderBSet) return 1;
+    if(EncoderASet && EncoderBSet) return -1;
+  }else if(!EncoderAPrev && !EncoderBPrev){
+    if(EncoderASet && !EncoderBSet) return 1;
+    if(!EncoderASet && EncoderBSet) return -1;
+  }else if(EncoderAPrev && !EncoderBPrev){
+    if(EncoderASet && EncoderBSet) return 1;
+    if(!EncoderASet && !EncoderBSet) return -1;
+  }
+}
+
 void Balanced::Get_EncoderSpeed()
 {
-  // encoder_left_pulse_num_speed += pwm_left < 0 ? (-Motor::encoder_count_left_a) : 
+  /// Print VITESSE ///
+  long vit_Left = _LeftEncoderTicks - _LeftEncoderTicks_actu;
+  _LeftEncoderTicks_actu = _LeftEncoderTicks;
+
+  long vit_Right = _RightEncoderTicks - _RightEncoderTicks_actu;
+  vit_Right = -vit_Right;
+  _RightEncoderTicks_actu = _RightEncoderTicks;
+
+  Serial.print(" Vitesse: ");
+  Serial.print(vit_Left);
+  Serial.print(" ");
+  Serial.println(vit_Right);
+
+
+  // // encoder_left_pulse_num_speed += pwm_left < 0 ? (-Motor::encoder_count_left_a) : 
+  // //                                                 Motor::encoder_count_left_a;
+  // // encoder_right_pulse_num_speed += pwm_right < 0 ? (-Motor::encoder_count_right_a) :
+  // //                                                 Motor::encoder_count_right_a;
+
+  // // encoder_left_pulse_num_speed += pwm_left_imp < 0 ? (-Motor::encoder_count_left_a) : 
+  // //                                                 Motor::encoder_count_left_a;
+  // // encoder_right_pulse_num_speed += pwm_right_imp < 0 ? (-Motor::encoder_count_right_a) :
+  // //                                                 Motor::encoder_count_right_a;
+
+  // encoder_left_pulse_num_speed += balance_control_output < 0 ? (-Motor::encoder_count_left_a) : 
   //                                                 Motor::encoder_count_left_a;
-  // encoder_right_pulse_num_speed += pwm_right < 0 ? (-Motor::encoder_count_right_a) :
+  // encoder_right_pulse_num_speed += balance_control_output < 0 ? (-Motor::encoder_count_right_a) :
   //                                                 Motor::encoder_count_right_a;
 
-  // encoder_left_pulse_num_speed += pwm_left_imp < 0 ? (-Motor::encoder_count_left_a) : 
-  //                                                 Motor::encoder_count_left_a;
-  // encoder_right_pulse_num_speed += pwm_right_imp < 0 ? (-Motor::encoder_count_right_a) :
-  //                                                 Motor::encoder_count_right_a;
+  // // encoder_left_pulse_num_speed += balance_control_output > 0 ? (-Motor::encoder_count_left_a) : 
+  // //                                                 Motor::encoder_count_left_a;
+  // // encoder_right_pulse_num_speed += balance_control_output > 0 ? (-Motor::encoder_count_right_a) :
+  // //                                                 Motor::encoder_count_right_a;
 
-  encoder_left_pulse_num_speed += balance_control_output < 0 ? (-Motor::encoder_count_left_a) : 
-                                                  Motor::encoder_count_left_a;
-  encoder_right_pulse_num_speed += balance_control_output < 0 ? (-Motor::encoder_count_right_a) :
-                                                  Motor::encoder_count_right_a;
-
-  // encoder_left_pulse_num_speed += balance_control_output > 0 ? (-Motor::encoder_count_left_a) : 
-  //                                                 Motor::encoder_count_left_a;
-  // encoder_right_pulse_num_speed += balance_control_output > 0 ? (-Motor::encoder_count_right_a) :
-  //                                                 Motor::encoder_count_right_a;
-
-  left_speed = encoder_left_pulse_num_speed;
-  right_speed = encoder_right_pulse_num_speed;
-  Motor::encoder_count_left_a=0;
-  Motor::encoder_count_right_a=0;
+  // left_speed = encoder_left_pulse_num_speed;
+  // right_speed = encoder_right_pulse_num_speed;
+  // Motor::encoder_count_left_a=0;
+  // Motor::encoder_count_right_a=0;
 }
 
 

@@ -9,7 +9,7 @@ class Motor
         Motor();
 
         // Measuring_speed
-        void Encoder_init();
+        // void Encoder_init();
 
         // void (Motor::*MOVE[4])(int speed); 
         void Control(int l_spd, int r_spd);
@@ -21,9 +21,9 @@ class Motor
         void Right(int speed);
 
 
-  public:
-          static unsigned long encoder_count_right_a;
-          static unsigned long encoder_count_left_a;
+//   public:
+//           static unsigned long encoder_count_right_a;
+//           static unsigned long encoder_count_left_a;
           
   private:
   
@@ -35,8 +35,8 @@ class Motor
           #define STBY_PIN 8
           
           //Encoder measuring speed  pin
-          #define ENCODER_LEFT_A_PIN 2
-          #define ENCODER_RIGHT_A_PIN 18
+        //   #define ENCODER_LEFT_A_PIN 2
+        //   #define ENCODER_RIGHT_A_PIN 18
   
 
   };

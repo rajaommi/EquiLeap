@@ -20,6 +20,7 @@
                 "/home/mirado/.arduino15/packages/arduino/hardware/avr/1.8.3/variants/mega",
                 "/home/mirado/Arduino/libraries/Bolder_Flight_Systems_SBUS/src",
                 "/home/mirado/.arduino15/packages/arduino/hardware/avr/1.8.3/libraries/Wire/src",
+                "/home/mirado/Arduino/libraries/digitalWriteFast",
                 "/home/mirado/.arduino15/packages/arduino/tools/avr-gcc/7.3.0-atmel3.6.1-arduino7/lib/gcc/avr/7.3.0/include",
                 "/home/mirado/.arduino15/packages/arduino/tools/avr-gcc/7.3.0-atmel3.6.1-arduino7/lib/gcc/avr/7.3.0/include-fixed",
                 "/home/mirado/.arduino15/packages/arduino/tools/avr-gcc/7.3.0-atmel3.6.1-arduino7/avr/include"

@@ -222,7 +222,8 @@ static void Timer2::interrupt()
 
 
 void setup() {
-  Motor.Encoder_init();
+  // Motor.Encoder_init();
+  Balanced.Encoder_init();
 
   //Serial for the receiver
   Timer2.init(15);
@@ -254,38 +255,38 @@ void loop() {
   if(millis() - print_time > 1000)
   { 
     print_time = millis();
-    Serial.print("spd= "); 
-    Serial.print(Balanced.left_speed);
-    Serial.print(" ");
-    Serial.print(Balanced.right_speed);
-    Serial.print(" Kp= ");
-    Serial.print(Balanced.kp_speed);
-    Serial.print(" Ki= ");
-    Serial.print(Balanced.ki_speed);
-    Serial.print(" Integral= ");
-    Serial.print(Balanced.car_speed_integeral);
-    Serial.print(" Spd_out= ");
-    Serial.println(Balanced.speed_control_output);
+    // Serial.print("spd= "); 
+    // Serial.print(Balanced.left_speed);
+    // Serial.print(" ");
+    // Serial.print(Balanced.right_speed);
+    // Serial.print(" Kp= ");
+    // Serial.print(Balanced.kp_speed);
+    // Serial.print(" Ki= ");
+    // Serial.print(Balanced.ki_speed);
+    // Serial.print(" Integral= ");
+    // Serial.print(Balanced.car_speed_integeral);
+    // Serial.print(" Spd_out= ");
+    // Serial.println(Balanced.speed_control_output);
     
-    Serial.print("ang= "); 
-    Serial.print(kalmanfilter.angle);
-    Serial.print(" vit= ");
-    Serial.print(kalmanfilter.Gyro_x);
-    Serial.print(" Kp= ");
-    Serial.print(Balanced.kp_balance);
-    Serial.print(" Kd= ");
-    Serial.print(Balanced.kd_balance);
-    Serial.print(" Bal_out= ");
-    Serial.println(Balanced.balance_control_output);
+    // Serial.print("ang= "); 
+    // Serial.print(kalmanfilter.angle);
+    // Serial.print(" vit= ");
+    // Serial.print(kalmanfilter.Gyro_x);
+    // Serial.print(" Kp= ");
+    // Serial.print(Balanced.kp_balance);
+    // Serial.print(" Kd= ");
+    // Serial.print(Balanced.kd_balance);
+    // Serial.print(" Bal_out= ");
+    // Serial.println(Balanced.balance_control_output);
 
-    Serial.print(" pwm_left= ");
-    Serial.println(Balanced.pwm_left);
-    Serial.println("");
+    // Serial.print(" pwm_left= ");
+    // Serial.println(Balanced.pwm_left);
+    // Serial.println("");
 
     // Serial.println(Balanced.test_interrupt);
     // Serial.println("In loop");
+
+    
   }
-  
-  
 }
 
