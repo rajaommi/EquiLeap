@@ -17,7 +17,7 @@ Balanced Balanced;
 KalmanFilter kalmanfilter;
 Motor Motor;
 
-int max_pwm = 700;
+int max_pwm = 300;
 
 Balanced::Balanced()
 { 
