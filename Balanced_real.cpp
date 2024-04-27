@@ -21,10 +21,9 @@ int max_pwm = 300;
 
 Balanced::Balanced()
 { 
-  kp_balance = 60.0, kd_balance = 5.0;
+  kp_balance = 0.0, kd_balance = 0.0;
 
-  // kp_speed = 4.0, ki_speed = 0.1; //kp speedd s enerve a 7.5 (c'était à cause du signe)
-  kp_speed = 4.00, ki_speed = 0.3; //kp speedd s enerve a 7.5 (c'était à cause du signe)
+  kp_speed = 0.0, ki_speed = 0.0; //
 
   kp_turn = 0.0, kd_turn = 0.0;
   
@@ -41,34 +40,19 @@ double constrain_val(double val, double min_val, double max_val) {
   }
 }
 
+
 void Balanced::Total_Control()
 {
   if (not arret_moteur){
     pwm_left = balance_control_output - speed_control_output - rotation_control_output;//Superposition of Vertical Velocity Steering Ring
     pwm_right = balance_control_output - speed_control_output + rotation_control_output;//Superposition of Vertical Velocity Steering Ring
 
-    // pwm_left = - speed_control_output ;//Superposition of Vertical Velocity Steering Ring
-    // pwm_right =  - speed_control_output ;//Superposition of Vertical Velocity Steering Ring
-
-
     pwm_left = constrain_val(pwm_left, -max_pwm, max_pwm);
     pwm_right = constrain_val(pwm_right, -max_pwm, max_pwm);
 
     
 
-    // cmd_sens += 1;
-
-    // if (cmd_sens%100==0)
-    // {
-    //   pwm_left_imp = -pwm_left_imp;
-    //   pwm_right_imp = -pwm_right_imp;
-    // }
-
-    // pwm_left = pwm_left + pwm_left_imp;
-    // pwm_right = pwm_right + pwm_right_imp;
-
-
-    // while(EXCESSIVE_ANGLE_TILT || PICKED_UP) 
+        // while(EXCESSIVE_ANGLE_TILT || PICKED_UP) 
     // { 
     //   Mpu6050.DataProcessing();
     //   Motor.Stop();
@@ -79,7 +63,6 @@ void Balanced::Total_Control()
   else{
     Motor.Stop();
   }
-  
   
 }
 
@@ -107,6 +90,8 @@ volatile bool _RightEncoderAPrev;
 volatile bool _RightEncoderBPrev;
 volatile long _RightEncoderTicks = 0;
 volatile long _RightEncoderTicks_actu = 0;
+
+
 
 void Balanced::Encoder_init()
 {
@@ -168,20 +153,93 @@ int ParseEncoder(bool EncoderAPrev, bool EncoderBPrev
   }
 }
 
+// Fonction pour insérer des valeurs dans les tableaux
+void Balanced::insertValue(long newLeft, long newRight) {
+  vit_Left_values[index] = newLeft;
+  vit_Right_values[index] = newRight;
+  index = (index + 1) % MEDIAN_FILTER_SIZE;  // Incrémente l'indice et boucle
+}
+
+// Fonction pour échanger deux éléments
+void swap(long &a, long &b) {
+    long t = a;
+    a = b;
+    b = t;
+}
+
+// Fonction pour trier un tableau (tri par bulles)
+void Balanced::bubbleSort(long arr[], int n) {
+    for (int i = 0; i < n-1; i++)    
+        for (int j = 0; j < n-i-1; j++)
+            if (arr[j] > arr[j+1])
+                swap(arr[j], arr[j+1]);
+}
+
+// Fonction pour calculer le médian d'un tableau
+long Balanced::median(long arr[], int size) {
+  long temp[size];
+  memcpy(temp, arr, sizeof(long) * size); // Copie pour le tri
+  bubbleSort(temp, size);  // Tri du tableau
+  return temp[size / 2];  // Retourne la valeur médiane
+}
+
+
+// Fonction pour obtenir les vitesses médianes
+void Balanced::getMedianSpeeds(long *medLeft, long *medRight) {
+  *medLeft = median(vit_Left_values, MEDIAN_FILTER_SIZE);
+  *medRight = median(vit_Right_values, MEDIAN_FILTER_SIZE);
+}
+
 void Balanced::Get_EncoderSpeed()
 {
-  /// Print VITESSE ///
-  long vit_Left = _LeftEncoderTicks - _LeftEncoderTicks_actu;
+  
+  /// CALCUL VITESSE ///
+  vit_Left = _LeftEncoderTicks - _LeftEncoderTicks_actu;
   _LeftEncoderTicks_actu = _LeftEncoderTicks;
 
-  long vit_Right = _RightEncoderTicks - _RightEncoderTicks_actu;
+  vit_Right = _RightEncoderTicks - _RightEncoderTicks_actu;
   vit_Right = -vit_Right;
   _RightEncoderTicks_actu = _RightEncoderTicks;
 
-  Serial.print(" Vitesse: ");
+  //////// MEDIAN FILTER ///////
+  
+  
+  // Insère les nouvelles valeurs dans les tableaux
+  insertValue(vit_Left, vit_Right);
+
+  // Obtient les vitesses médianes
+  getMedianSpeeds(&medLeft, &medRight);
+
+  /*
+  Serial.print("G ");
   Serial.print(vit_Left);
-  Serial.print(" ");
-  Serial.println(vit_Right);
+  Serial.print(" | ");
+  // Serial.print(Balanced.vit_Left_values[0]);
+  for (int i = 0; i < 5; i++) {
+    Serial.print(vit_Left_values[i]);
+    Serial.print(" ");
+  }
+  Serial.print(" | ");
+  Serial.print(medLeft);
+
+  Serial.print(" D ");
+  Serial.print(vit_Right);
+  Serial.print(" | ");
+  // Serial.print(Balanced.vit_Right_values[0]);
+  for (int i = 0; i < 5; i++) {
+    Serial.print(vit_Right_values[i]);
+    Serial.print(" ");
+  }
+  Serial.print(" | ");
+  Serial.println(medRight);
+  */
+
+  //// SPEED FILTER ////
+  // car_speed=(vit_Left+vit_Right)*0.5;
+  car_speed = (medLeft+medRight)*0.5;
+
+  speed_filter = speed_filter_old * 0.1 + car_speed * 0.9;
+  speed_filter_old = speed_filter;
 
 
   // // encoder_left_pulse_num_speed += pwm_left < 0 ? (-Motor::encoder_count_left_a) : 
@@ -270,17 +328,19 @@ void Balanced::Right(int speed)
 
 void Balanced::PI_SpeedRing()
 {
-   double car_speed=(encoder_left_pulse_num_speed + encoder_right_pulse_num_speed) * 0.5;
-  //  double car_speed=(encoder_left_pulse_num_speed);
+  //  double car_speed=(encoder_left_pulse_num_speed + encoder_right_pulse_num_speed) * 0.5;
+
    encoder_left_pulse_num_speed = 0;
    encoder_right_pulse_num_speed = 0;
-   speed_filter = speed_filter_old * 0.0 + car_speed * 1.0;
-   speed_filter_old = speed_filter;
+   
    car_speed_integeral += speed_filter;
    car_speed_integeral += -setting_car_speed; 
    car_speed_integeral = constrain_val(car_speed_integeral, -200, 200);
 
-   speed_control_output = -kp_speed * speed_filter - ki_speed * car_speed_integeral;
+  //  speed_control_output = -kp_speed * speed_filter - ki_speed * car_speed_integeral;
+
+  speed_control_output = -kp_speed * car_speed ;
+
    speed_control_output = constrain_val(speed_control_output, -999, 999);
    speed_control_output = -speed_control_output;
 

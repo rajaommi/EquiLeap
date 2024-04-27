@@ -35,6 +35,13 @@ class Balanced
           void Left(int speed);
           void Right(int speed);
           void Speed_control(int trans, int turn);
+
+          void insertValue(long newLeft, long newRight);
+          void bubbleSort(long arr[], int n);
+          long median(long arr[], int size);
+          void getMedianSpeeds(long *medLeft, long *medRight);
+
+
   
 /*Speed value*/
           double pwm_left=0.0;
@@ -46,6 +53,19 @@ class Balanced
 
           int left_speed;
           int right_speed;
+
+          long vit_Left=0;
+          long vit_Right=0;
+
+          // Définition de la taille du tableau pour le filtre médian
+          #define MEDIAN_FILTER_SIZE 7
+
+          // Déclaration des tableaux pour stocker les valeurs des vitesses
+          long vit_Left_values[MEDIAN_FILTER_SIZE];
+          long vit_Right_values[MEDIAN_FILTER_SIZE];
+          int index = 0;  // Indice pour insérer de nouvelles valeurs dans le tableau
+
+          long medLeft, medRight;
 
 /*Cnt*/
           int interrupt_cnt;
@@ -59,8 +79,9 @@ class Balanced
           double kp_turn, kd_turn;
           double offset_orientation;
 
-          double speed_filter;
-          double speed_filter_old;
+          double car_speed=0.0;
+          double speed_filter=0.0;
+          double speed_filter_old=0.0;
           double car_speed_integeral = 0.0;
           double balance_control_output;
           double speed_control_output;
