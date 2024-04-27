@@ -1,0 +1,65 @@
+ vit= 0 0 av= 0.00 Kp= 1.00 Ki= 0.00 Integral= 0.00 Spd_out= 0.00
+ang= -35.22 Kp= 20.00 prodang= -701.84 vitang= 7.34 Kd= 2.00 prodvit= 9.54 Bal_out= 549.82 pwm_left= -165.69
+
+ vit= 117 11596 av= 8144.50 Kp= 1.00 Ki= 0.00 Integral= 200.00 Spd_out= 999.00
+ang= -34.15 Kp= 20.00 prodang= -690.98 vitang= 0.97 Kd= 2.00 prodvit= 21.01 Bal_out= 551.73 pwm_left= 432.15
+
+ vit= 7341 -7014 av= 2208.00 Kp= 1.00 Ki= 0.00 Integral= 200.00 Spd_out= 999.00
+ang= -33.69 Kp= 20.00 prodang= -668.73 vitang= -5.99 Kd= 2.00 prodvit= -16.14 Bal_out= 562.35 pwm_left= -442.84
+
+ vit= 119 -14736 av= 119.00 Kp= 1.00 Ki= 0.00 Integral= 200.00 Spd_out= 999.00
+ang= -33.96 Kp= 20.00 prodang= -678.88 vitang= 1.02 Kd= 2.00 prodvit= -2.08 Bal_out= 566.31 pwm_left= 498.34
+
+ vit= 83 77 av= 80.00 Kp= 1.00 Ki= 0.00 Integral= 200.00 Spd_out= -999.00
+ang= -33.98 Kp= 20.00 prodang= -667.40 vitang= 19.18 Kd= 2.00 prodvit= 27.92 Bal_out= 494.18 pwm_left= 500.00
+
+ vit= 60153 -73769 av= -9415.50 Kp= 1.00 Ki= 0.00 Integral= -200.00 Spd_out= -999.00
+ang= -31.14 Kp= 20.00 prodang= -615.73 vitang= 37.24 Kd= 2.00 prodvit= 74.47 Bal_out= 524.39 pwm_left= -493.55
+
+ vit= 48735 176 av= -13977.50 Kp= 1.00 Ki= 0.00 Integral= -200.00 Spd_out= -999.00
+ang= -21.36 Kp= 20.00 prodang= -420.16 vitang= -5.08 Kd= 2.00 prodvit= -5.50 Bal_out= 378.00 pwm_left= 88.56
+
+ vit= 199 161 av= 144.00 Kp= 1.00 Ki= 0.00 Integral= 200.00 Spd_out= 140.50
+ang= -15.86 Kp= 20.00 prodang= -302.75 vitang= 14.82 Kd= 2.00 prodvit= 44.15 Bal_out= 103.76 pwm_left= -4.78
+
+ vit= 67 51 av= 48.00 Kp= 1.00 Ki= 0.00 Integral= 198.00 Spd_out= -2.00
+ang= -9.98 Kp= 20.00 prodang= -180.99 vitang= 4.02 Kd= 2.00 prodvit= 4.26 Bal_out= 20.53 pwm_left= 255.08
+
+ vit= -98 13 av= -42.50 Kp= 1.00 Ki= 0.00 Integral= -89.50 Spd_out= -50.50
+ang= -4.27 Kp= 20.00 prodang= -67.50 vitang= 3.02 Kd= 2.00 prodvit= 12.88 Bal_out= -115.09 pwm_left= 500.00
+
+ vit= 45913 -38962 av= 17236.50 Kp= 1.00 Ki= 0.00 Integral= 200.00 Spd_out= 999.00
+ang= 2.89 Kp= 20.00 prodang= 70.53 vitang= -2.76 Kd= 2.00 prodvit= 2.95 Bal_out= -230.83 pwm_left= -403.54
+
+ vit= 25 84 av= 38.50 Kp= 1.00 Ki= 0.00 Integral= 191.00 Spd_out= -9.00
+ang= 7.74 Kp= 20.00 prodang= 163.07 vitang= -7.21 Kd= 2.00 prodvit= -9.12 Bal_out= -302.85 pwm_left= 500.00
+
+ vit= -85 -9059 av= -4561.00 Kp= 1.00 Ki= 0.00 Integral= -200.00 Spd_out= -32.50
+ang= 12.32 Kp= 20.00 prodang= 255.19 vitang= 0.30 Kd= 2.00 prodvit= -3.65 Bal_out= -398.02 pwm_left= 500.00
+
+ vit= 3956 -40532 av= -19844.50 Kp= 1.00 Ki= 0.00 Integral= 200.00 Spd_out= 853.50
+ang= 15.36 Kp= 20.00 prodang= 319.99 vitang= 14.51 Kd= 2.00 prodvit= 7.57 Bal_out= -466.99 pwm_left= -500.00
+
+ vit= 45511 -17383 av= 20209.50 Kp= 1.00 Ki= 0.00 Integral= 200.00 Spd_out= 999.00
+ang= 18.26 Kp= 20.00 prodang= 369.23 vitang= 4.21 Kd= 2.00 prodvit= 5.88 Bal_out= -531.25 pwm_left= 462.70
+
+ vit= 46939 -91032 av= -22046.50 Kp= 1.00 Ki= 0.00 Integral= -200.00 Spd_out= -999.00
+ang= 21.53 Kp= 20.00 prodang= 446.56 vitang= -2.83 Kd= 2.00 prodvit= -20.28 Bal_out= -571.32 pwm_left= 411.01
+
+ vit= 15748 -21659 av= -12135.50 Kp= 1.00 Ki= 0.00 Integral= -200.00 Spd_out= -999.00
+ang= 27.10 Kp= 20.00 prodang= 567.30 vitang= 24.66 Kd= 2.00 prodvit= 28.78 Bal_out= -738.62 pwm_left= 243.62
+
+ vit= 27716 -4 av= 13860.00 Kp= 1.00 Ki= 0.00 Integral= 200.00 Spd_out= 999.00
+ang= 33.39 Kp= 20.00 prodang= 680.85 vitang= 14.88 Kd= 2.00 prodvit= 17.49 Bal_out= -831.69 pwm_left= -500.00
+
+ vit= 12154 -6702 av= -2050.50 Kp= 1.00 Ki= 0.00 Integral= -200.00 Spd_out= -999.00
+ang= 35.18 Kp= 20.00 prodang= 703.43 vitang= 6.79 Kd= 2.00 prodvit= 20.84 Bal_out= -855.54 pwm_left= -500.00
+
+ vit= -9 -11057 av= 2216.00 Kp= 1.00 Ki= 0.00 Integral= 200.00 Spd_out= 999.00
+ang= 36.43 Kp= 20.00 prodang= 730.44 vitang= -6.23 Kd= 2.00 prodvit= -14.00 Bal_out= -833.10 pwm_left= 164.20
+
+ vit= 16345 -1291 av= 7406.50 Kp= 1.00 Ki= 0.00 Integral= -200.00 Spd_out= 999.00
+ang= 37.48 Kp= 20.00 prodang= 755.26 vitang= -3.86 Kd= 2.00 prodvit= -11.86 Bal_out= -861.52 pwm_left= 134.17
+
+ vit= 32965 14834 av= 6230.00 Kp= 1.00 Ki= 0.00 Integral= 200.00 Spd_out= 999.00
+ang= 38.66 Kp= 20.00 prodang= 772.63 vitang= -14.46 Kd= 2.00 prodvit= -30.70 Bal_out= -881.77 pwm_left= 93.95

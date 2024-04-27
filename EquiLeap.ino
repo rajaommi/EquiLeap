@@ -71,13 +71,13 @@ void updt_offset(float offset)
 
 void updt_coef(int command, float kp, float kd){
   if (command<200){
-    Balanced.kp_balance=kp*1.0/255 + 00.0;
-    Balanced.kd_balance=kd*1.0/255 + 0.0;
+    Balanced.kp_balance=kp*1.0/255 + 15.0;
+    Balanced.kd_balance=kd*1.0/255 + 15.0;
     return;
   }
   if (command<1000){
-    Balanced.kp_speed=kp*3.0/255 + 0.00; //
-    Balanced.ki_speed=kd*1.0/255 + 0.0; // 
+    Balanced.kp_speed=kp*3.0/255 + 1.0; //
+    Balanced.ki_speed=kd*0.5/255 + 0.1; // 
     return;
   }
   if (command>1000){
@@ -86,9 +86,9 @@ void updt_coef(int command, float kp, float kd){
   }
 }
 void reset_coef(){
-  Balanced.kp_balance = 0.0; //valeur trouvée empiriquement 6.5
-  Balanced.kd_balance = 0.0; //valeur trouvée empiriquement 0.2
-  Balanced.kp_speed = 0; 
+  Balanced.kp_balance = 15.0; //valeur trouvée empiriquement 6.5
+  Balanced.kd_balance = 15.0; //valeur trouvée empiriquement 0.2
+  Balanced.kp_speed = 1.0; 
   Balanced.ki_speed = 0.;
   Balanced.kp_turn = 0 ;
   Balanced.kd_turn = 0.;
@@ -196,7 +196,7 @@ static void Timer2::interrupt()
   // Balanced.PI_SpeedRing();//calcul de 
   // Balanced.PI_SteeringRing();
 
-  if(Balanced.interrupt_cnt > 8)//toutes les 8 itérations
+  if(Balanced.interrupt_cnt > 2)//toutes les 8 itérations
   {
     Balanced.interrupt_cnt=0;
     Balanced.PI_SpeedRing();//calcul de 
@@ -255,42 +255,46 @@ void loop() {
   { 
     print_time = millis();
     
-    Serial.print(" vit: ");
+    Serial.print(" vit= ");
     Serial.print(Balanced.medLeft);
     Serial.print(" ");
     Serial.print(Balanced.medRight);
-    Serial.print(" car_speed = ");
+    Serial.print(" av= ");
     Serial.print(Balanced.car_speed);
     Serial.print(" Kp= ");
     Serial.print(Balanced.kp_speed);
-    // Serial.print(" Ki= ");
-    // Serial.print(Balanced.ki_speed);
-    // Serial.print(" Integral= ");
-    // Serial.print(Balanced.car_speed_integeral);
+    Serial.print(" Ki= ");
+    Serial.print(Balanced.ki_speed);
+    Serial.print(" Integral= ");
+    Serial.print(Balanced.car_speed_integeral);
     Serial.print(" Spd_out= ");
-    Serial.print(Balanced.speed_control_output);
+    Serial.println(Balanced.speed_control_output);
     
-    // Serial.print("ang= "); 
-    // Serial.print(kalmanfilter.angle);
-    // Serial.print(" vit= ");
-    // Serial.print(kalmanfilter.Gyro_x);
-    // Serial.print(" Kp= ");
-    // Serial.print(Balanced.kp_balance);
-    // Serial.print(" Kd= ");
-    // Serial.print(Balanced.kd_balance);
-    // Serial.print(" Bal_out= ");
-    // Serial.println(Balanced.balance_control_output);
+    Serial.print("ang= "); 
+    Serial.print(kalmanfilter.angle);
+    Serial.print(" Kp= ");
+    Serial.print(Balanced.kp_balance);
+    Serial.print(" prodang= ");
+    Serial.print(Balanced.kp_balance*kalmanfilter.angle);
+    Serial.print(" vitang= ");
+    Serial.print(kalmanfilter.Gyro_x);
+    Serial.print(" Kd= ");
+    Serial.print(Balanced.kd_balance);
+    Serial.print(" prodvit= ");
+    Serial.print(Balanced.kd_balance*kalmanfilter.Gyro_x);
+    Serial.print(" Bal_out= ");
+    Serial.print(Balanced.balance_control_output);
 
     Serial.print(" pwm_left= ");
-    Serial.print(Balanced.pwm_left);
+    Serial.println(Balanced.pwm_left);
     // Serial.println("");
 
     // Serial.println(Balanced.test_interrupt);
     // Serial.println("In loop");
     
-    Serial.print(" dtimer=");
-    Serial.println(dtimer); // Durée d'une interruption
-    
+    // Serial.print(" dtimer=");
+    // Serial.println(dtimer); // Durée d'une interruption
+    Serial.println("");
     
     
   }

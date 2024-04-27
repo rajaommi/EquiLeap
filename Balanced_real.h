@@ -58,7 +58,7 @@ class Balanced
           long vit_Right=0;
 
           // Définition de la taille du tableau pour le filtre médian
-          #define MEDIAN_FILTER_SIZE 7
+          #define MEDIAN_FILTER_SIZE 3
 
           // Déclaration des tableaux pour stocker les valeurs des vitesses
           long vit_Left_values[MEDIAN_FILTER_SIZE];

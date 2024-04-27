@@ -17,13 +17,13 @@ Balanced Balanced;
 KalmanFilter kalmanfilter;
 Motor Motor;
 
-int max_pwm = 300;
+int max_pwm = 500;
 
 Balanced::Balanced()
 { 
-  kp_balance = 0.0, kd_balance = 0.0;
+  kp_balance = 15.0, kd_balance = 15.0;
 
-  kp_speed = 0.0, ki_speed = 0.0; //
+  kp_speed = 1.0, ki_speed = 0.1; //
 
   kp_turn = 0.0, kd_turn = 0.0;
   
@@ -195,10 +195,15 @@ void Balanced::Get_EncoderSpeed()
   
   /// CALCUL VITESSE ///
   vit_Left = _LeftEncoderTicks - _LeftEncoderTicks_actu;
+  vit_Left = constrain_val(vit_Left, -500, 500);
+
   _LeftEncoderTicks_actu = _LeftEncoderTicks;
 
   vit_Right = _RightEncoderTicks - _RightEncoderTicks_actu;
   vit_Right = -vit_Right;
+
+  vit_Right = constrain_val(vit_Right, -500, 500);
+
   _RightEncoderTicks_actu = _RightEncoderTicks;
 
   //////// MEDIAN FILTER ///////
@@ -238,7 +243,7 @@ void Balanced::Get_EncoderSpeed()
   // car_speed=(vit_Left+vit_Right)*0.5;
   car_speed = (medLeft+medRight)*0.5;
 
-  speed_filter = speed_filter_old * 0.1 + car_speed * 0.9;
+  speed_filter = speed_filter_old * 0.0 + car_speed * 1.0;
   speed_filter_old = speed_filter;
 
 
@@ -337,9 +342,9 @@ void Balanced::PI_SpeedRing()
    car_speed_integeral += -setting_car_speed; 
    car_speed_integeral = constrain_val(car_speed_integeral, -200, 200);
 
-  //  speed_control_output = -kp_speed * speed_filter - ki_speed * car_speed_integeral;
+   speed_control_output = -kp_speed * speed_filter - ki_speed * car_speed_integeral;
 
-  speed_control_output = -kp_speed * car_speed ;
+  // speed_control_output = -kp_speed * car_speed ;
 
    speed_control_output = constrain_val(speed_control_output, -999, 999);
    speed_control_output = -speed_control_output;
